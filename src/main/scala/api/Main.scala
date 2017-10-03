@@ -2,6 +2,7 @@ package api
 
 import actor.db.DbActor
 import actor.db.DbActor.{Retrieve, Store}
+import actor.rss.RssActor
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes.{Created, OK}
@@ -11,9 +12,8 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
-import models.{DbEntry, DbEntryProtocol, RssUrl, RssUrlProtocol}
+import models.{RssUrl, RssUrlProtocol}
 
-import scala.xml.XML
 import scala.concurrent.duration._
 
 object Main extends App with RssUrlProtocol {
