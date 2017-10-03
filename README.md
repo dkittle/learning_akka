@@ -39,14 +39,14 @@ curl -i http://localhost:9000/db?key=foo
 ```
 
 ## Chapter 3
-The goal of this chapter is to have your application retreive an RSS feed and store the contents of each article in the feed in the `DbActor`.
+The goal of this chapter is to have your application retrieve an RSS feed and store the contents of each article in the feed in the `DbActor`.
 
 #### Requirement 1
 Create a REST endpoint that accepts a URL of content that should be downloaded via an RSS feed. The application will
 retrieve the RSS feed from the URL provided, parse out the articles (items) and store the content of those articles in
 the AkkaDB we created in Chapter 2.
 
-When storing content in the AkkaDb, ou should use the `<guid>` element as the key for each `<item>` in the RSS feed. The value
+When storing content in the AkkaDb, you should use the `<guid>` element as the key for each `<item>` in the RSS feed. The value
 stored in the AkkaDb could be the `<description>` element of the item or you may opt to download the content from the
 item's URL found in the '<link>' of the item. The description element is often wrapped in a CDATA which you’ll need to discard.
 
