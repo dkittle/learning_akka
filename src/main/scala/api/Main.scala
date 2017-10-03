@@ -1,16 +1,17 @@
 package api
 
 import actor.db.DbActor
-import akka.actor.{ActorSystem, Props}
-import akka.pattern.ask
+import actor.db.DbActor.{Retrieve, Store}
+import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes.{Created, OK}
-import akka.http.scaladsl.server.Directives.{as, complete, entity, get, parameters, path, post, _}
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
-import models.{DbEntry, DbEntryProtocol}
+import models.DbEntryProtocol
 
 import scala.concurrent.duration._
 
@@ -21,31 +22,23 @@ object Main extends App with DbEntryProtocol {
 
   implicit val timeout = Timeout(2.seconds)
 
-  val db = system.actorOf(Props[DbActor], "db")
+  val db = system.actorOf(DbActor.props, "db")
 
   val routes: Route =
     path("db") {
       get {
         parameters('key.as[String]) { key =>
-          val value = db ? key
+          val value = db ? Retrieve(key)
           complete(value.mapTo[String])
         }
       } ~
         post {
           parameters('key.as[String], 'value.as[String]) { (key, value) =>
-            db ! (key, value)
+            db ! Store(key, value)
             complete(Created, s"$key stored.")
           }
         }
     } ~
-      path("content") {
-        get {
-          parameters('key.as[String]) { key =>
-            val value = db ? key
-            complete(value.mapTo[String])
-          }
-        }
-      } ~
       path("quit") {
         post {
           system.terminate()
