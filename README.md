@@ -44,11 +44,11 @@ The goal of this chapter is to have your application retrieve an RSS feed and st
 #### Requirement 1
 Create a REST endpoint that accepts a URL of content that should be downloaded via an RSS feed. The application will
 retrieve the RSS feed from the URL provided, parse out the articles (items) and store the content of those articles in
-the AkkaDB we created in Chapter 2.
+the `DbActor`.
 
 When storing content in the AkkaDb, you should use the `<guid>` element as the key for each `<item>` in the RSS feed. The value
 stored in the AkkaDb could be the `<description>` element of the item or you may opt to download the content from the
-item's URL found in the '<link>' of the item. The description element is often wrapped in a CDATA which you’ll need to discard.
+item's URL found in the `<link>` of the item. The description element is often wrapped in a CDATA which you’ll need to discard.
 
 If you grab the content from the URL in the `<link>` element, you can use the BoilerPipe library included in the Learning
 Akka project to retrieve the content stripped of extraneous HTML elements/tags from it’s specific URL. For example:
@@ -60,10 +60,10 @@ The endpoint should be
 POST http://localhost:9000/contents/url
 ```
 
-The request body should be JSON indicating the URL to fetch the content from.
+The request body should be JSON indicating the URL to fetch the RSS feed from.
 ```
 {
-    "url", "[url]"
+    "url", "[RSS feed url]"
 }
 ```
 
