@@ -1,5 +1,6 @@
 package actor.db
 
+import actor.db.DbActor.Store
 import akka.actor.{ActorSystem, Props}
 import akka.testkit.{TestActorRef, TestKit}
 import org.scalatest.{BeforeAndAfterAll, FlatSpec, FlatSpecLike, Matchers}
@@ -19,7 +20,7 @@ class DbActorSpec()
     val actor = TestActorRef(new DbActor)
     val db = actor.underlyingActor
 
-    actor ! ("a", "testing")
+    actor ! Store("a", "testing")
     assert(db.db.contains("a"))
   }
 
