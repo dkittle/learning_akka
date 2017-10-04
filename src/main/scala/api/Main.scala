@@ -1,16 +1,17 @@
 package api
 
 import actor.db.DbActor
-import actor.db.DbActor.{Keys, Retrieve, Store}
+import actor.db.DbActor.{Keys, Retrieve}
 import actor.fetcher.FetcherActor
 import actor.rss.RssActor
 import actor.rss.RssActor.ReadRss
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.StatusCodes.{Created, OK}
+import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.pattern.ask
+import akka.routing.RoundRobinPool
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
@@ -27,7 +28,7 @@ object Main extends App with RssUrlProtocol {
   implicit val timeout = Timeout(20.seconds)
 
   val db = system.actorOf(DbActor.props, "db")
-  val fetcher = system.actorOf(FetcherActor.props(db), "fetcher")
+  val fetcher = system.actorOf(new RoundRobinPool(5).props(FetcherActor.props(db)), "fetcher")
   val rss = system.actorOf(RssActor.props(fetcher), "rss-reader")
 
   val routes: Route =

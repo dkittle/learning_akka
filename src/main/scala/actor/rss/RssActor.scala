@@ -13,7 +13,7 @@ class RssActor(fetcher: ActorRef) extends Actor with ActorLogging {
       val xml = scala.xml.XML.load(new URL(url))
       val items = xml \\ "item"
       items.foreach { item =>
-        val link = (item \\ "link").text.trim
+        val link = (item \\ "link").text
         fetcher ! FetchArticle((item \\ "guid").text, link)
       }
       sender() ! (xml \\ "channel" \ "title").text
