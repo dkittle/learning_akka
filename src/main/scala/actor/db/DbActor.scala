@@ -30,6 +30,7 @@ object DbActor {
 
   sealed trait DbMessage
   case class Retrieve(key: String) extends DbMessage
+  case class Remove(key: String) extends DbMessage
   case class Store(key: String, value: Any) extends DbMessage
   case object Keys extends DbMessage
 

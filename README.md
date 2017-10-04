@@ -112,3 +112,11 @@ in a serial fashion: one article at a time.
 Start by refactoring the code to download an article, strip it of tags and store it in the `DbActor` to a separtate 
 actor. Then, change that actor into a `Router` (with a pool of actors created by it). What happens to the RSS fetching
 time with 2 actors in the pool? How about with 5 actors in the pool?
+
+## Chapter 5
+Alas, when you shut down the application, the `DbActor` looses it's state. One can preserve state by using Akka
+persistence.
+
+Refactor the `DbActor` to use Akka persistence. We'll be using leveldb to store state for testing and development.
+Use **event** sourcing for your solution. Add a `Remove` message to the `DbActor` that removes a key, if it exists.
+Have the remove message cause a snapshot of the actor state.

@@ -1,7 +1,7 @@
 package api
 
 import actor.db.DbActor
-import actor.db.DbActor.{Keys, Retrieve}
+import actor.db.DbActor.{Keys, Remove, Retrieve}
 import actor.fetcher.FetcherActor
 import actor.rss.RssActor
 import actor.rss.RssActor.ReadRss
@@ -52,7 +52,11 @@ object Main extends App with RssUrlProtocol {
         get {
           val result = db ? Retrieve(guid)
           complete(OK, result.mapTo[String])
-        }
+        } ~
+          delete {
+            db ! Remove(guid)
+            complete(OK)
+          }
       } ~
       path("quit") {
         post {
