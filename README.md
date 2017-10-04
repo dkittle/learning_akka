@@ -46,6 +46,8 @@ Create a REST endpoint that accepts a URL of content that should be downloaded v
 retrieve the RSS feed from the URL provided, parse out the articles (items) and store the content of those articles in
 the `DbActor`.
 
+**Add only ONE actor to the system for this implementation.** Call the actor `RssActor`.
+
 When storing content in the AkkaDb, you should use the `<guid>` element as the key for each `<item>` in the RSS feed. The value
 stored in the AkkaDb could be the `<description>` element of the item or you may opt to download the content from the
 item's URL found in the `<link>` of the item. The description element is often wrapped in a CDATA which you’ll need to discard.
@@ -89,7 +91,7 @@ GET http://localhost:9000/contents/guids
 
 Parse an RSS feed
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://rss.cbc.ca/lineup/world.xml"}' http://localhost:9000/contents/url
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.cbc.ca/cmlink/rss-world"}' http://localhost:9000/contents/url
 ```
 
 List the guid keys in the DB
@@ -99,5 +101,5 @@ curl -i http://localhost:9000/contents/guids
 
 Retrieve a piece of content
 ```
-curl -i http://localhost:9000/content/guid/[a guid from the content in the DB]
+curl -i http://localhost:9000/contents/guid/[a guid from the content in the DB]
 ```
