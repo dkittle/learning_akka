@@ -45,10 +45,9 @@ object Main extends App with RssUrlProtocol {
           }
         }
       } ~
-      path("contents" / "guid" / Segment) { key =>
+      path("contents" / "guid" / Segment) { guid =>
         get {
-//          parameters('key.as[String]) { key =>
-          val result = db ? Retrieve(key)
+          val result = db ? Retrieve(guid)
           complete(OK, result.mapTo[String])
         }
       } ~
