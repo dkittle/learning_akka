@@ -1,13 +1,13 @@
 package api
 
 import actor.db.DbActor
-import actor.db.DbActor.{Keys, Retrieve, Store}
+import actor.db.DbActor.{Keys, Retrieve}
 import actor.fetcher.FetcherActor
 import actor.rss.RssActor
 import actor.rss.RssActor.ReadRss
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.StatusCodes.{Created, OK}
+import akka.http.scaladsl.model.StatusCodes.OK
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.pattern.ask

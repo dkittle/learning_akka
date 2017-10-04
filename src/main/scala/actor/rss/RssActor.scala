@@ -2,7 +2,6 @@ package actor.rss
 
 import java.net.URL
 
-import actor.db.DbActor.Store
 import actor.fetcher.FetcherActor.FetchArticle
 import actor.rss.RssActor.ReadRss
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
@@ -25,6 +24,7 @@ object RssActor {
   def props(fetcher: ActorRef): Props = Props(classOf[RssActor], fetcher)
 
   sealed trait RssMessage
+
   case class ReadRss(url: String) extends RssMessage
 
 }
