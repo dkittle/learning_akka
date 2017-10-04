@@ -1,8 +1,9 @@
 package api
 
 import actor.db.DbActor
-import actor.db.DbActor.{Retrieve, Store}
+import actor.db.DbActor.{Keys, Retrieve, Store}
 import actor.rss.RssActor
+import actor.rss.RssActor.ReadRss
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes.{Created, OK}
@@ -20,31 +21,36 @@ object Main extends App with RssUrlProtocol {
 
   implicit val system = ActorSystem("webserver-actor-system")
   implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
 
-  implicit val timeout = Timeout(2.seconds)
+  implicit val timeout = Timeout(20.seconds)
 
   val db = system.actorOf(DbActor.props, "db")
   val rss = system.actorOf(RssActor.props(db), "rss-reader")
 
   val routes: Route =
-    path("content" / "url") {
+    path("contents" / "url") {
       (post & entity(as[RssUrl])) { url =>
-        complete(url.url)
+        val result = (rss ? ReadRss(url.url)).mapTo[String]
+        onSuccess(result) { e =>
+          complete(s"channel '${e.trim}' fetched")
+        }
       }
     } ~
-      path("content") {
+      path("contents" / "guids") {
         get {
-          parameters('key.as[String]) { key =>
-            val result = db ? Retrieve(key)
-            complete(OK, result.mapTo[String])
+          val guids = db ? Keys
+          onSuccess(guids) { e =>
+            complete(OK, e.toString)
           }
-        } ~
-          post {
-            parameters('key.as[String], 'value.as[String]) { (key, value) =>
-              db ! Store(key, value)
-              complete(Created, s"$key stored.")
-            }
-          }
+        }
+      } ~
+      path("contents" / "guid" / Segment) { key =>
+        get {
+//          parameters('key.as[String]) { key =>
+          val result = db ? Retrieve(key)
+          complete(OK, result.mapTo[String])
+        }
       } ~
       path("quit") {
         post {
