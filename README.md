@@ -103,3 +103,12 @@ Retrieve a piece of content
 ```
 curl -i http://localhost:9000/contents/guid/[a guid from the content in the DB]
 ```
+
+## Chapter 4
+If you are grabbing articles and cleaning them up using `boilerpipe`, you likely needed to increase your `ask Timeout`
+in `Main` to 10 seconds or so. This is because the RssActor is downloading articles from a URL and stripping out tags
+in a serial fashion: one article at a time.
+
+Start by refactoring the code to download an article, strip it of tags and store it in the `DbActor` to a separtate 
+actor. Then, change that actor into a `Router` (with a pool of actors created by it). What happens to the RSS fetching
+time with 2 actors in the pool? How about with 5 actors in the pool?
