@@ -1,7 +1,7 @@
 package api
 
-import actor.db.DbActor
-import actor.db.DbActor.{Keys, Remove, Retrieve}
+import actor.db.DurableDbActor
+import actor.db.DurableDbActor.{Keys, RemoveValue, Retrieve}
 import actor.fetcher.FetcherActor
 import actor.rss.RssActor
 import actor.rss.RssActor.ReadRss
@@ -27,7 +27,7 @@ object Main extends App with RssUrlProtocol {
 
   implicit val timeout = Timeout(20.seconds)
 
-  val db = system.actorOf(DbActor.props, "db")
+  val db = system.actorOf(DurableDbActor.props, "db")
   val fetcher = system.actorOf(new RoundRobinPool(5).props(FetcherActor.props(db)), "fetcher")
   val rss = system.actorOf(RssActor.props(fetcher), "rss-reader")
 
@@ -54,7 +54,7 @@ object Main extends App with RssUrlProtocol {
           complete(OK, result.mapTo[String])
         } ~
           delete {
-            db ! Remove(guid)
+            db ! RemoveValue(guid)
             complete(OK)
           }
       } ~

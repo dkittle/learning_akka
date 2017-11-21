@@ -120,3 +120,32 @@ persistence.
 Refactor the `DbActor` to use Akka persistence. We'll be using leveldb to store state for testing and development.
 Use **event** sourcing for your solution. Add a `Remove` message to the `DbActor` that removes a key, if it exists.
 Have the remove message cause a snapshot of the actor state.
+
+## Chapter 6
+Having some historical stats on RSS processing would make the application a lot more useful. We will create a 
+`Bookkeeper` actor that will track the status of a fetch as it's running and retain stats on the results of each
+ fetch after the fact.
+ 
+Implement the `Bookkepper` as a persistent actor that does a snapshot after each RSS fetch is completely processed 
+(after all items have been fetched and stored in the `DbActor`).
+
+### Requirement 6.1
+`RssActor` should inform `Bookkeeper` of the status of each RSS processing.
+It should send a message when it retrieves an RSS file along with the results of the fetch (404, not an RSS
+feed or fetched). It should also send a message after each article fetch request has been submitted to `FetchActor`
+and include the GUID of each article.
+Finally, it should send a message when all article fetch messages have been sent to the `FetchActor` including the
+the number of articles in the RSS file.
+
+### Requirement 6.2
+`FetchActor` should send a message to `Bookkeeper` with the results of each article fetch.
+
+### Requirement 6.3
+When an RSS feed is processed, the `RSSActor` should aggregate metrics for the processing of the feed including number 
+of articles in the feed, the number that were successfully fetched and the number of articles that could not be fetched.
+
+### Requirement 6.4
+--- blurb about snapshotting aggregate metrics
+
+
+For each RSS file processing request, the `Bookkeeper` w

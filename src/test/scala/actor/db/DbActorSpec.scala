@@ -15,19 +15,19 @@ class DbActorSpec()
     TestKit.shutdownActorSystem(system)
   }
 
-  "a db actor" should "store a value" in {
-    val actor = TestActorRef(new DbActor)
-    val db = actor.underlyingActor
-
-    actor ! ("a", "testing")
-    assert(db.db.contains("a"))
-  }
-
-  it should "not store a value if the key is not a string" in {
-    val actor = TestActorRef(new DbActor)
-    val db = actor.underlyingActor
-
-    actor ! (1, "testing")
-    assert(db.db.size === 0)
-  }
+//  "a db actor" should "store a value" in {
+//    val actor = TestActorRef(new DbActor)
+//    val db = actor.underlyingActor
+//
+//    actor ! ("a", "testing")
+//    assert(db.db.contains("a"))
+//  }
+//
+//  it should "not store a value if the key is not a string" in {
+//    val actor = TestActorRef(new DbActor)
+//    val db = actor.underlyingActor
+//
+//    actor ! (1, "testing")
+//    assert(db.db.size === 0)
+//  }
 }
