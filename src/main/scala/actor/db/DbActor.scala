@@ -1,6 +1,6 @@
 package actor.db
 
-import actor.db.DbActor.{Retrieve, Store}
+import actor.db.DbActor.{RetrieveValue, StoreValue}
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.actor.Actor.Receive
 
@@ -10,8 +10,10 @@ class DbActor extends Actor with ActorLogging {
   val db = new mutable.HashMap[String, Any]
 
   override def receive: Receive = {
-    case Store(k, v) => db.put(k, v)
-    case Retrieve(k) => sender() ! db.getOrElse(k, "")
+    case StoreValue(key, value) =>
+      db.put(key, value)
+    case RetrieveValue(key) =>
+      sender() ! db.getOrElse(key, "")
     case o => log.info("unknown message ", o)
   }
 
@@ -21,7 +23,7 @@ object DbActor {
   val props: Props = Props[DbActor]
 
   sealed trait DbMessage
-  case class Retrieve(key: String) extends DbMessage
-  case class Store(key: String, value: Any) extends DbMessage
+  case class RetrieveValue(key: String) extends DbMessage
+  case class StoreValue(key: String, value: Any) extends DbMessage
 
 }

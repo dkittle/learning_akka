@@ -1,7 +1,7 @@
 package api
 
 import actor.db.DbActor
-import actor.db.DbActor.{Retrieve, Store}
+import actor.db.DbActor.{RetrieveValue, StoreValue}
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes.{Created, OK}
@@ -28,13 +28,13 @@ object Main extends App with DbEntryProtocol {
     path("db") {
       get {
         parameters('key.as[String]) { key =>
-          val value = db ? Retrieve(key)
+          val value = db ? RetrieveValue(key)
           complete(value.mapTo[String])
         }
       } ~
         post {
           parameters('key.as[String], 'value.as[String]) { (key, value) =>
-            db ! Store(key, value)
+            db ! StoreValue(key, value)
             complete(Created, s"$key stored.")
           }
         }
