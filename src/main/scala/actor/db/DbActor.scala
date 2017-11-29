@@ -1,6 +1,6 @@
 package actor.db
 
-import actor.db.DbActor.{RetrieveValue, StoreValue}
+import actor.db.DbActor.{KeyFound, KeyNotFound, RetrieveValue, StoreValue}
 import akka.actor.{Actor, ActorLogging, Props}
 
 import scala.collection.mutable
@@ -12,7 +12,10 @@ class DbActor extends Actor with ActorLogging {
     case StoreValue(key, value) =>
       db.put(key, value)
     case RetrieveValue(key) =>
-      sender() ! db.getOrElse(key, "")
+      db.get(key) match {
+        case None => sender() ! KeyNotFound
+        case Some(x) => sender() ! KeyFound(x)
+      }
     case o => log.info("unknown message ", o)
   }
 
@@ -25,4 +28,7 @@ object DbActor {
   case class RetrieveValue(key: String) extends DbMessage
   case class StoreValue(key: String, value: Any) extends DbMessage
 
+  sealed trait DbEvent
+  case object KeyNotFound extends DbEvent
+  case class KeyFound(value: Any) extends DbEvent
 }

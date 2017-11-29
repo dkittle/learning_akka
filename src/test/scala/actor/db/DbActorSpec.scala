@@ -1,6 +1,6 @@
 package actor.db
 
-import actor.db.DbActor.{RetrieveValue, StoreValue}
+import actor.db.DbActor.{KeyFound, KeyNotFound, RetrieveValue, StoreValue}
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
 import org.scalatest.{BeforeAndAfterAll, FlatSpecLike, Matchers}
@@ -29,10 +29,10 @@ class DbActorSpec()
     assert(db.db.contains("a"))
   }
 
-  it should "not return a value if it's not been stored" in {
+  it should "not return a value if no value has been stored" in {
     val actor = TestActorRef(new DbActor)
     actor ! RetrieveValue("a")
-    expectMsg(timeout, "")
+    expectMsg(timeout, KeyNotFound)
   }
 
   it should "return a value if it's been stored" in {
@@ -42,6 +42,6 @@ class DbActorSpec()
     assert(db.db.contains("a"))
 
     actor ! RetrieveValue("a")
-    expectMsg(timeout, "testing")
+    expectMsg(timeout, KeyFound("testing"))
   }
 }
