@@ -2,7 +2,6 @@ package actor.db
 
 import actor.db.DbActor.{RetrieveValue, StoreValue}
 import akka.actor.{Actor, ActorLogging, Props}
-import akka.actor.Actor.Receive
 
 import scala.collection.mutable
 

@@ -2,12 +2,9 @@ package actor.db
 
 import actor.db.DbActor.{RetrieveValue, StoreValue}
 import akka.actor.ActorSystem
-import akka.pattern.ask
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
-import akka.util.Timeout
 import org.scalatest.{BeforeAndAfterAll, FlatSpecLike, Matchers}
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class DbActorSpec()
